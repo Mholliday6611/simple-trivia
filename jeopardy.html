@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<div>
+			<button onclick="start()">Start Game</button>
+			<div>
+				<div class="question">
+					<p id="currentQuestion"></p>
+					<p id="message"></p>
+					<p>POINTS: <span id="points"></span></p>
+				</div>
+				<div class="form">
+						<input type="text" id="answer" />
+						<input onclick="answer()" type="submit" />
+					<button onclick="skip()">Skip</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script type="text/javascript">
+			let result = false
+			let currentQuestion = 0
+			let points = 0
+
+			let start = async function(){
+				let response = await axios.get("http://jservice.io/api/random?count=10")
+				result = response.data
+				console.log(result)
+				currentQuestion = 0
+				renderDisplay()
+			}
+
+			let renderDisplay = function(){
+				document.getElementById('message').innerHTML = ""
+				document.getElementById('currentQuestion').innerHTML = result[currentQuestion].question
+				document.getElementById('points').innerHTML = points
+			}
+			let answer = function(){
+				if(document.getElementById("answer").value.toLowerCase() == result[currentQuestion].answer.toLowerCase()){
+					points += result[currentQuestion].value
+					currentQuestion ++
+					renderDisplay()
+				}else{
+					document.getElementById('message').innerHTML = "Try Again"
+				}
+			}
+			let skip = function(){
+				currentQuestion ++
+				renderDisplay()
+			}
+		</script>
+	</body>
+</html>
